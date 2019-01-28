@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 // import logo from './logo.svg';
+import axios from 'axios';
 import './App.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
 
@@ -8,25 +9,29 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      data: [
-        {"id":"8","text":"99"},
-        {"id":"9","text":"test"},
-        {"id":"10","text":"asd"},
-        {"id":"13","text":"zzzzzzzzzzzzz"},
-        {"id":"14","text":"zzzzzzzzzzzzzzzzzzzzzzzzzzzzz"},
-        {"id":"15","text":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
-        {"id":"17","text":"adfdafadsfdasf"},
-        {"id":"18","text":"dsfsdfsd"},
-        {"id":"19","text":"fdd"}
-      ],
+      data: [],
+      lastId: 0,
     }
+    this.apiUrl = '//5c4e8265d87cab001476ef4a.mockapi.io/api';
+  }
+
+  componentDidMount() {
+    axios.get(this.apiUrl)
+      .then((res) => {
+        this.setState({data: res.data});
+      });
   }
 
   addToDo(val) {
-    this.state.data.push({"id":"", "text":val});
-    this.setState({
-      data: this.state.data,
-    });
+    let data = (this.state.lastId === 0) ? {"id":parseInt(lastId) + 1, "text": val} : {"id":this.state.lastId + 1, "text": val};
+    this.state.data.push(data);
+    axios.post(this.apiUrl, data)
+      .then((res) => { 
+        this.setState({
+          data: this.state.data,
+          lastId: this.state.lastId + 1,
+        });
+      });
   }
 
   render() {
@@ -35,14 +40,21 @@ class App extends Component {
         <div className="container">
           <Header />
           <div>
-            <AddToList addToDo={this.addToDo.bind(this)} />
-            <TodoList data={this.state.data} />
+            <AddToList
+              addToDo={ this.addToDo.bind(this) }
+            />
+            <br /><br /><br />
+            <TodoList
+              data={ this.state.data }
+            />
           </div>
         </div>
       </Router>
     )
   }
 }
+
+let lastId;
 
 const Header = () => (
   <div>
@@ -51,14 +63,18 @@ const Header = () => (
     </nav>
   </div>
 )
-const TodoList = ({data}) => {
+const TodoList = ({ data }) => {
   return (
-    <TodoItems todos={data} remove={remove}/>
+    <TodoItems
+      todos={ data }
+      remove={ remove }
+    />
   )
 }
-const TodoItems = ({todos, remove}) => {
+const TodoItems = ({ todos, remove }) => {
   const todoNode = todos.map((todo) => {
-    return (<Todo todo={todo} key={todo.id} remove={remove} />)
+    lastId = todo.id;
+    return (<Todo todo={ todo } key={ todo.id } remove={ remove } />)
   });
   return (
     <div className="todoitem-field">
@@ -68,17 +84,21 @@ const TodoItems = ({todos, remove}) => {
     </div>
   )
 }
-const AddToList = ({addToDo}) => {
+const AddToList = ({ addToDo }) => {
   let input;
+  let title;
   return (
   <div className="addtolist-field">
     <div className="addtolist-row">
-      <div className="addtolist-block">
-        <div className="addtolist-input" contentEditable ref={node => input = node} onBlur={(e) => {
+      <div className="addtolist-block" onBlur={(e) => {
             e.preventDefault();
-            addToDo(input.innerHTML);
-            input.innerHTML = '';
+            if (input.innerHTML !== '') {
+              addToDo(input.innerHTML);
+              input.innerHTML = '';
+            }
           }}>
+        <div className="addtolist-title" contentEditable suppressContentEditableWarning={true} placeholder="標題" ref={node => title = node}></div>
+        <div className="addtolist-input" contentEditable placeholder="新增記事" ref={node => input = node}>
 
         </div>
       </div>
@@ -86,14 +106,14 @@ const AddToList = ({addToDo}) => {
   </div>
 )};
 
-const Todo = ({todo, remove}) => {
+const Todo = ({ todo, remove }) => {
   return (
     <div className="todoitem-block">
       <div className="todoitem-title">
         <span>標題</span>
       </div>
       <div className="todoitem-content">
-        <div>{todo.text}</div>
+        <div>{ todo.text }</div>
       </div>
   </div>
   );

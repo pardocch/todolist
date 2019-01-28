@@ -62,6 +62,8 @@ div {
 }
 
 .todoitem-field {
+  display: inline-block;
+  vertical-align: top; /* here */
   /* border: 2px solid #4285F4; */
 }
 
@@ -93,8 +95,9 @@ div {
 }
 
 .addtolist-field {
+  display: inline-block;
   /* border: 2px solid #4285F4; */
-  /* width: 600px; */
+  width: 100%;
 }
 
 .addtolist-row {
@@ -116,8 +119,26 @@ div {
   padding: 5px 10px;
 }
 
-[contenteditable]:focus {
-  /* outline: 1px solid #00D0FF;
-  -moz-outline-radius: 30px;
-  -webkit-outline-radius: 30px; */
+.addtolist-block:focus-within > .addtolist-title {
+  display: block;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  box-shadow: -2px 4px 12px -2px rgba(20%,20%,40%,0.5);
+  height: 40px;
+  padding: 5px 10px;
 }
+
+.addtolist-title {
+  display: none;
+  /* border: 1px solid #dadce0;
+  border-radius: 6px;
+  box-shadow: -2px 4px 12px -2px rgba(20%,20%,40%,0.5);
+  height: 40px;
+  padding: 5px 10px; */
+}
+
+/* [contenteditable]:focus {
+  outline: 1px solid #00D0FF;
+  -moz-outline-radius: 30px;
+  -webkit-outline-radius: 30px;
+} */
