@@ -34,6 +34,18 @@ class App extends Component {
       });
   }
 
+  deleteToDo(id) {
+    const remainder = this.state.data.filter((todo) => {
+      if (todo.id !== id) return todo;
+    });
+    axios.delete(this.apiUrl+'/'+id)
+      .then((res) => {
+        this.setState({
+          data: remainder,
+        })
+      });
+  }
+
   render() {
     return(
       <Router>
