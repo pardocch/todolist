@@ -106,6 +106,7 @@ const AddToList = ({ addToDo }) => {
             e.preventDefault();
             if (input.innerHTML !== '') {
               addToDo(title.innerHTML, input.innerHTML);
+              title.innerHTML = '';
               input.innerHTML = '';
             }
           }}>
