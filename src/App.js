@@ -22,8 +22,8 @@ class App extends Component {
       });
   }
 
-  addToDo(val) {
-    let data = (this.state.lastId === 0) ? {"id":parseInt(lastId) + 1, "text": val} : {"id":this.state.lastId + 1, "text": val};
+  addToDo(title, val) {
+    let data = (this.state.lastId === 0) ? {"id":parseInt(lastId) + 1, "title": title, "text": val} : {"id":this.state.lastId + 1, "title": title, "text": val};
     this.state.data.push(data);
     axios.post(this.apiUrl, data)
       .then((res) => { 
@@ -105,28 +105,28 @@ const AddToList = ({ addToDo }) => {
       <div className="addtolist-block" onBlur={(e) => {
             e.preventDefault();
             if (input.innerHTML !== '') {
-              addToDo(input.innerHTML);
+              addToDo(title.innerHTML, input.innerHTML);
               input.innerHTML = '';
             }
           }}>
         <div className="addtolist-title" contentEditable suppressContentEditableWarning={true} placeholder="標題" ref={node => title = node}></div>
-        <div className="addtolist-input" contentEditable placeholder="新增記事" ref={node => input = node}>
-
-        </div>
+        <div className="addtolist-input" contentEditable placeholder="新增記事…" ref={node => input = node}></div>
       </div>
     </div>
   </div>
 )};
 
 const Todo = ({ todo, remove }) => {
+  let titleblock = '';
+  let textblock = '';
+  if (todo.title !== '') {
+    titleblock = <div className="todoitem-title"><span>{ todo.title }</span></div>;
+  }
+  textblock = <div className="todoitem-content"><div>{ todo.text }</div></div>;
   return (
     <div className="todoitem-block">
-      <div className="todoitem-title">
-        <span>標題</span>
-      </div>
-      <div className="todoitem-content">
-        <div>{ todo.text }</div>
-      </div>
+      { titleblock }
+      { textblock }
   </div>
   );
 }
